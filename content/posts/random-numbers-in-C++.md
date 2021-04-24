@@ -8,23 +8,23 @@ draft: false
 `std::rand()` is an abomination inherited from C. If you want to be correct, the use case of it so limited you might as well use some other library that does the right thing.
 
 ## The Pigeonhole Principle
-> In mathematics, the pigeonhole principle states that if n items are put into m containers, with n > m, then at least one container must contain more than one item.
+>  for natural numbers k and m, if n = km + 1 objects are distributed among m sets, then the pigeonhole principle asserts that at least one of the sets will contain at least k + 1 objects.
 >
 > -- <cite>Wikipedia</cite>
 
-If I were to give you 12 graphic cards and tell you to evenly distribute them to 5 people. You just can't partially because
-nobody can get 12 graphics cards in 2021 and partially to the pigeonhole principle. 5 does not evenly divide 12,
-some people will be extra lucky and manage to get more than 1 card.
+If I were to give you 12 graphic cards and tell you to evenly distribute them to 5 people. You can't,  partially because
+nobody can get 12 graphics cards in 2021 and partially due to the pigeonhole principle. 5 does not evenly divide 12,
+some people will be extra lucky and manage to get more than 2 cards.
 
 
 ## Broken Library, Blame C
-What does `std::rand()` returns? From cpprefernce.org
+What does `std::rand()` return? From [cppreference.org](https://en.cppreference.com/w/cpp/numeric/random/rand)
 > Returns a pseudo-random integral value between 0 and RAND_MAX (0 and RAND_MAX included).
 
-We already have a problem, `RAND_MAX` is implementation-defined, but guaranteed to be 32767. If it is actually just
+We already have a problem, `RAND_MAX` is implementation-defined, but guaranteed to be at least 32767. If it is actually just
 32767, then for the common use case of implementing a dice `std::rand() % 6` will not have a uniform distribution due
 to the pigeonhole principle. However, there is more trouble coming. `std::rand()` is usually implemented horribly, on many
-platforms the lower bits have terrible randomness. So when you module it with a relatively small number, the distribution is
+platforms the lower bits have terrible randomness. So when you modulo it with a relatively small number, the distribution is
 even more skewed.
 
 So, unknown upper range, pigeonhole principle working against us and the low-quality low bits, a perfect trifecta! This is
@@ -33,7 +33,7 @@ awful it is.[^1]
 
 
 
-# What is Random?
+# What is Randomness?
 If you want high-quality random numbers, you must first have a clear understanding of what randomness is in a sufficiently
 rigorous context. It's time to cue the mandatory xkcd meme ![comics](https://imgs.xkcd.com/comics/random_number.png). In
 some context, this is random. It merely happens that most of the time that's not what you want.
@@ -73,7 +73,7 @@ There are more distributions available, if you're interested, go to [cppreferenc
 
 
 ## Source of Randomness
-Computers are deterministic machines, so how do non-deterministic events occur from deterministic machines? Technically you can't,
+Computers are deterministic machines, so how do non-deterministic events occur from deterministic machines? They don't,
 computers use pseudo-random number generators. Which given an initial state, will spit out deterministic results. However,
 similar to a hash function, a slight change in input will result in very different outputs. So what we actually need to do,
 is figure out how to set up the initial states in a random fashion.
@@ -88,7 +88,7 @@ this is really slow so we only use it to set up our desired generator.
 ### Generators
 In the context of C++, given an initial state, a generator will continue to produce random bit patterns[^5]. Most people
 are familiar with the linear congruential algorithm, however, the Mersenne twister is preferable in most scenarios. In C++,
-both `std::linear_congruential_engine` and `std::mersenne_twister_engine` are provided. Note, you should almost use them directly,
+both `std::linear_congruential_engine` and `std::mersenne_twister_engine` are provided. Note, you should almost never use them directly,
 there are additional parameters than just initial states, understanding them all with their implications requires years of mathematical
 training.
 
@@ -124,7 +124,7 @@ Don't ever use `std::rand()`.
 
 [^1]: Just like c-style strings, perhaps for a future post.
 [^2]: This is not strictly correct, technically it's called the probability density.
-[^3]: Don't think you can just round it and call it a day, your choice of rounding will affect the final distribution.
-[^4]: Don't think you can implement cryptography with this, proper cryptography requires lots of training and additional requirements on the generator.
-[^5]: Don't think you can just cast the bit patterns to int or flats, you have no control of its distribution and you will be
+[^3]: Don't assume you can just round it and call it a day, your choice of rounding will affect the final distribution.
+[^4]: Don't assume you can implement cryptography with this, proper cryptography requires lots of training and additional requirements on the generator.
+[^5]: Don't assume you can just cast the bit patterns to int or floats, you have no control of its distribution and you will be
 all kinds of pain if you cast it to floats since floats contain denormalized numbers, NaN, two 0s, and two infinities.

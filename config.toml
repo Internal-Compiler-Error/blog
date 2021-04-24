@@ -1,0 +1,19 @@
+baseURL = "https://internal-compiler-error.com/"
+languageCode = "en-us"
+title = "Internal Compiler Error"
+theme = "hyde"
+relativeURLs = true
+googleAnalytics = "UA-194152264-1"
+disqusShortname = "internal-compiler-error"
+
+[params]
+themeColor = "theme-base-08"
+description = "Eccentric views of a software engineering student from the University of Guelph"
+
+
+[Menus]
+main = [
+    { Name = "Github", URL = "https://github.com/Internal-Compiler-Error/" },
+    { Name = "LinkedIn", URL = "https://www.linkedin.com/in/liang-wang-225607174/" },
+    { Name = "Twitter", URL = "https://twitter.com/__m_reserved" }
+]

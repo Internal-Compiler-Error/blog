@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Internal Compiler Error</title>
+    <link>https://internal-compiler-error.com/posts/</link>
+    <description>Recent content in Posts on Internal Compiler Error</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 11 Apr 2021 21:37:29 -0400</lastBuildDate>
+    
+	<atom:link href="https://internal-compiler-error.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>SENG at UoG Is a Scam</title>
+      <link>https://internal-compiler-error.com/posts/seng-at-uog-is-a-scam/</link>
+      <pubDate>Sun, 11 Apr 2021 21:37:29 -0400</pubDate>
+      
+      <guid>https://internal-compiler-error.com/posts/seng-at-uog-is-a-scam/</guid>
+      <description>After a year of the Software Engineering (SENG) program at the University of Guelph, I can confidently say that the program offers no value over the Computer Science (CS) program if you have Co-op. SENG is a poor attempt at trying to mimic real-world development by an institution that has no connection in reality.
+To copycat Voltaire
+ The Software Engineering program is not about software, nor about engineering and barely a sensible program</description>
+    </item>
+    
+    <item>
+      <title>Random Numbers in C&#43;&#43;</title>
+      <link>https://internal-compiler-error.com/posts/random-numbers-in-c&#43;&#43;/</link>
+      <pubDate>Wed, 07 Apr 2021 19:38:28 -0400</pubDate>
+      
+      <guid>https://internal-compiler-error.com/posts/random-numbers-in-c&#43;&#43;/</guid>
+      <description>Issues of std::rand() std::rand() is an abomination inherited from C. If you want to be correct, the use case of it so limited you might as well use some other library that does the right thing.
+The Pigeonhole Principle  for natural numbers k and m, if n = km + 1 objects are distributed among m sets, then the pigeonhole principle asserts that at least one of the sets will contain at least k + 1 objects.</description>
+    </item>
+    
+  </channel>
+</rss>

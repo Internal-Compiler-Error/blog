@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"  xml:lang="en-us" lang="en-us" >
+<head>
+    <link href="https://gmpg.org/xfn/11" rel="profile">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="generator" content="Hugo 0.74.3" />
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Random Numbers in C&#43;&#43; &middot; Internal Compiler Error</title>
+    <meta name="description" content=""/>
+
+    
+    <link type="text/css" rel="stylesheet" href="https://internal-compiler-error.com/css/print.css" media="print">
+    <link type="text/css" rel="stylesheet" href="https://internal-compiler-error.com/css/poole.css">
+    <link type="text/css" rel="stylesheet" href="https://internal-compiler-error.com/css/syntax.css">
+    <link type="text/css" rel="stylesheet" href="https://internal-compiler-error.com/css/hyde.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+    
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../../apple-touch-icon-144-precomposed.png">
+    <link rel="shortcut icon" href="../../favicon.png">
+
+    
+    
+
+</head>
+
+  <body class="theme-base-08 ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://internal-compiler-error.com/"><h1>Internal Compiler Error</h1></a>
+      <p class="lead">
+       Eccentric views of a software engineering student from the University of Guelph 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://internal-compiler-error.com/">Home</a> </li>
+        <li><a href="https://github.com/Internal-Compiler-Error/"> Github </a></li><li><a href="https://www.linkedin.com/in/liang-wang-225607174/"> LinkedIn </a></li><li><a href="https://twitter.com/__m_reserved"> Twitter </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2021. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Random Numbers in C&#43;&#43;</h1>
+  <time datetime=2021-04-07T19:38:28-0400 class="post-date">Wed, Apr 7, 2021</time>
+  <h1 id="issues-of--stdrand">Issues of  <code>std::rand()</code></h1>
+<p><code>std::rand()</code> is an abomination inherited from C. If you want to be correct, the use case of it so limited you might as well use some other library that does the right thing.</p>
+<h2 id="the-pigeonhole-principle">The Pigeonhole Principle</h2>
+<blockquote>
+<p>for natural numbers k and m, if n = km + 1 objects are distributed among m sets, then the pigeonhole principle asserts that at least one of the sets will contain at least k + 1 objects.</p>
+<p>&ndash; <!-- raw HTML omitted -->Wikipedia<!-- raw HTML omitted --></p>
+</blockquote>
+<p>If I were to give you 12 graphic cards and tell you to evenly distribute them to 5 people. You can&rsquo;t,  partially because
+nobody can get 12 graphics cards in 2021 and partially due to the pigeonhole principle. 5 does not evenly divide 12,
+some people will be extra lucky and manage to get more than 2 cards.</p>
+<h2 id="broken-library-blame-c">Broken Library, Blame C</h2>
+<p>What does <code>std::rand()</code> return? From <a href="https://en.cppreference.com/w/cpp/numeric/random/rand">cppreference.org</a></p>
+<blockquote>
+<p>Returns a pseudo-random integral value between 0 and RAND_MAX (0 and RAND_MAX included).</p>
+</blockquote>
+<p>We already have a problem, <code>RAND_MAX</code> is implementation-defined, but guaranteed to be at least 32767. If it is actually just
+32767, then for the common use case of implementing a dice <code>std::rand() % 6</code> will not have a uniform distribution due
+to the pigeonhole principle. However, there is more trouble coming. <code>std::rand()</code> is usually implemented horribly, on many
+platforms the lower bits have terrible randomness. So when you modulo it with a relatively small number, the distribution is
+even more skewed.</p>
+<p>So, unknown upper range, pigeonhole principle working against us and the low-quality low bits, a perfect trifecta! This is
+exactly why <code>std::rand()</code> should die in a painful death, sadly it&rsquo;s in C and that means it will never die regardless how
+awful it is.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<h1 id="what-is-randomness">What is Randomness?</h1>
+<p>If you want high-quality random numbers, you must first have a clear understanding of what randomness is in a sufficiently
+rigorous context. It&rsquo;s time to cue the mandatory xkcd meme <img src="https://imgs.xkcd.com/comics/random_number.png" alt="comics">. In
+some context, this is random. It merely happens that most of the time that&rsquo;s not what you want.</p>
+<h2 id="probability-distributions">Probability Distributions</h2>
+<p>To better understand what we actually want, we must understand the concept of probability distributions. In probability
+distributions, we quantify how likely a variable will take on certain values. Imagine two black magic boxes, both spits out
+random numbers, one spits 1 and 0 in an almost 50/50 fashion while the other while spits out 1 almost constantly, but sometimes it
+spits out 0. Both are random, knowing the previous number that it spits out gives you little to no indication of what the next number will be, yet clearly, they are different. We say that they have two different underlying probability distributions.</p>
+<p>In practice, we almost never come up with custom probability distributions, which is the domain of real statisticians. Here I
+would introduce just a few common ones that are offered in the C++ standard library.</p>
+<h3 id="uniform-distribution">Uniform Distribution</h3>
+<p>This is the distribution most people think of. In a uniform distribution with lower range l and upper range u, all the numbers
+in [l, u] are equally likely to occur. Note that C++ both offers <code>std::uniform_int_distribution</code> and <code>std::uniform_real_distribution</code>
+, which limits the output as the names suggest.</p>
+<h3 id="normal-distribution">Normal Distribution</h3>
+<p>In normal distributions, the output has a central tendency and is symmetric. It&rsquo;s almost a crime to explain the normal distribution
+without some graphs, so here it is.</p>
+<p><img src="https://cdn.pixabay.com/photo/2013/07/13/12/19/distribution-159626_1280.png" alt="normal distribution">
+You can think of the height at a given x value as to how likely it is to occur<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. As you can see, there are some values that are
+more likely than others, namely the center region; numbers outside of those regions are symmetric. Normal distribution only makes sense
+in the infinite context, hence there is no version just for ints. <sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> You can control how much the central tendency happens
+by controlling the variance and where the center region lies by setting the mean. If you find yourself needing the normal
+distribution, you need to have good working knowledge about basic statistics or consult a real statistician. Don&rsquo;t take
+any advice from me other than the advice to talk to a statistician.</p>
+<h3 id="bernoulli-distribution">Bernoulli Distribution</h3>
+<p>The Bernoulli distribution can be seen as a fancier version of a coin toss. Instead of just 50/50, the Bernoulli distribution
+allows you to set a custom probability. This is the ideal model for simulating weighted coins, where the odds of the head may
+be higher than tails. In C++, the <code>std::bernoulli_distribution</code> returns a <code>bool</code> indicating a binary event.</p>
+<p>There are more distributions available, if you&rsquo;re interested, go to <a href="https://en.cppreference.com/w/cpp/numeric/random">cppreference</a>.</p>
+<h2 id="source-of-randomness">Source of Randomness</h2>
+<p>Computers are deterministic machines, so how do non-deterministic events occur from deterministic machines? They don&rsquo;t,
+computers use pseudo-random number generators. Which given an initial state, will spit out deterministic results. However,
+similar to a hash function, a slight change in input will result in very different outputs. So what we actually need to do,
+is figure out how to set up the initial states in a random fashion.</p>
+<h3 id="true-randomness-exists-on-modern-hardware">True Randomness Exists on Modern Hardware</h3>
+<p>When I said that computers are deterministic machines, that was partially a lie. Modern hardware actually has a built-in
+source of randomness that is truly random, based on the environment of the hardware. In C++, this is represented using
+<code>std::random_device</code>. It has a function call operator that will ask the source of randomness to produce a random value. So
+in theory, you could just use it with a probability distribution and you will have true randomness<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>. However, in practice,
+this is really slow so we only use it to set up our desired generator.</p>
+<h3 id="generators">Generators</h3>
+<p>In the context of C++, given an initial state, a generator will continue to produce random bit patterns<sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup>. Most people
+are familiar with the linear congruential algorithm, however, the Mersenne twister is preferable in most scenarios. In C++,
+both <code>std::linear_congruential_engine</code> and <code>std::mersenne_twister_engine</code> are provided. Note, you should almost never use them directly,
+there are additional parameters than just initial states, understanding them all with their implications requires years of mathematical
+training.</p>
+<h1 id="example">Example</h1>
+<p>By now, you actually have all the knowledge to correctly generate random numbers in C++! Here&rsquo;s an example generating high
+quality dice rolls</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C++" data-lang="C++"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;random&gt; // the header where all the magic happens</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#75715e">// true source of randomness, used to seed
+</span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>random_device rd;
+    
+    <span style="color:#75715e">// 64 bit std::mersenne_twister_engine with a 
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// good setting, note the size is big, consider 
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// making it static or put it on heap to avoid 
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// frequent construction 
+</span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>mt19937_64 engine{rd()};
+    
+    <span style="color:#75715e">// 1 to 6 inclusive, producing int
+</span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>uniform_int_distribution<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> dis{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">6</span>}; 
+    
+    <span style="color:#75715e">// produces one random value in 1 to 6 in an 
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// uniform fashion, call this repeatedly to 
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// get more values
+</span><span style="color:#75715e"></span>    dis(engine);
+}
+</code></pre></div><h1 id="tldr">Tl;Dr</h1>
+<p>Don&rsquo;t ever use <code>std::rand()</code>.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Just like c-style strings, perhaps for a future post. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>This is not strictly correct, technically it&rsquo;s called the probability density. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>Don&rsquo;t assume you can just round it and call it a day, your choice of rounding will affect the final distribution. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>Don&rsquo;t assume you can implement cryptography with this, proper cryptography requires lots of training and additional requirements on the generator. <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p>Don&rsquo;t assume you can just cast the bit patterns to int or floats, you have no control of its distribution and you will be
+all kinds of pain if you cast it to floats since floats contain denormalized numbers, NaN, two 0s, and two infinities. <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+</div>
+
+<h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "internal-compiler-error" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </main>
+
+    
+      
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-194152264-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    
+  </body>
+</html>
