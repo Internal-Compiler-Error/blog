@@ -8,12 +8,12 @@ disqusShortname = "internal-compiler-error"
 
 [params]
 themeColor = "theme-base-08"
-description = "Eccentric views of a software engineering student from the University of Guelph"
+description = "Eccentric views of a computer science student from the University of Guelph"
 
 
 [Menus]
 main = [
     { Name = "Github", URL = "https://github.com/Internal-Compiler-Error/" },
     { Name = "LinkedIn", URL = "https://www.linkedin.com/in/liang-wang-225607174/" },
-    { Name = "Twitter", URL = "https://twitter.com/__m_reserved" }
-]
+    { Name = "Twitter", URL = "https://twitter.com/__m_reserved" },
+
