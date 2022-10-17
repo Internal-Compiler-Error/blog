@@ -13,9 +13,8 @@
       <pubDate>Sun, 11 Apr 2021 21:37:29 -0400</pubDate>
       
       <guid>https://internal-compiler-error.com/posts/seng-at-uog-is-a-scam/</guid>
-      <description>After a year of the Software Engineering (SENG) program at the University of Guelph, I can confidently say that the program offers no value over the Computer Science (CS) program if you have Co-op. SENG is a poor attempt at trying to mimic real-world development by an institution that has no connection in reality.
-To copycat Voltaire
- The Software Engineering program is not about software, nor about engineering and barely a sensible program</description>
+      <description>October 16, 2022: I&amp;rsquo;ve added my update to my situation and fixed some typos. If you want to see the previous state of the post, please see the commit.
+After a year of the Software Engineering (SENG) program at the University of Guelph, I can confidently say that the program offers no value over the Computer Science (CS) program if you have Co-op. SENG is a poor attempt at trying to mimic real-world development by an institution that has no connection in reality.</description>
     </item>
     
     <item>
@@ -25,7 +24,7 @@ To copycat Voltaire
       
       <guid>https://internal-compiler-error.com/posts/random-numbers-in-c&#43;&#43;/</guid>
       <description>Issues of std::rand() std::rand() is an abomination inherited from C. If you want to be correct, the use case of it so limited you might as well use some other library that does the right thing.
-The Pigeonhole Principle  for natural numbers k and m, if n = km + 1 objects are distributed among m sets, then the pigeonhole principle asserts that at least one of the sets will contain at least k + 1 objects.</description>
+The Pigeonhole Principle for natural numbers k and m, if n = km + 1 objects are distributed among m sets, then the pigeonhole principle asserts that at least one of the sets will contain at least k + 1 objects.</description>
     </item>
     
     <item>

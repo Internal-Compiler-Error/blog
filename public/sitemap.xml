@@ -1,43 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>https://internal-compiler-error.com/</loc>
     <lastmod>2021-04-11T21:37:29-04:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://internal-compiler-error.com/posts/</loc>
     <lastmod>2021-04-11T21:37:29-04:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://internal-compiler-error.com/posts/seng-at-uog-is-a-scam/</loc>
     <lastmod>2021-04-11T21:37:29-04:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://internal-compiler-error.com/posts/random-numbers-in-c&#43;&#43;/</loc>
     <lastmod>2021-04-07T19:38:28-04:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://internal-compiler-error.com/personal-posts/in-flames-summary/</loc>
     <lastmod>2021-04-07T14:41:17-04:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://internal-compiler-error.com/personal-posts/</loc>
     <lastmod>2021-04-07T14:41:17-04:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://internal-compiler-error.com/categories/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://internal-compiler-error.com/tags/</loc>
   </url>
-  
 </urlset>

@@ -3,7 +3,7 @@
 <head>
   <link href="https://gmpg.org/xfn/11" rel="profile">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="generator" content="Hugo 0.80.0" />
+  <meta name="generator" content="Hugo 0.104.3" />
 
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -125,56 +125,56 @@ training.</p>
 <h1 id="example">Example</h1>
 <p>By now, you actually have all the knowledge to correctly generate random numbers in C++! Here&rsquo;s an example generating high
 quality dice rolls</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C++" data-lang="C++"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;random&gt; // the header where all the magic happens</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
-    <span style="color:#75715e">// true source of randomness, used to seed
-</span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>random_device rd;
-    
-    <span style="color:#75715e">// 64 bit std::mersenne_twister_engine with a 
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// good setting, note the size is big, consider 
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// making it static or put it on heap to avoid 
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// frequent construction 
-</span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>mt19937_64 engine{rd()};
-    
-    <span style="color:#75715e">// 1 to 6 inclusive, producing int
-</span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>uniform_int_distribution<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> dis{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">6</span>}; 
-    
-    <span style="color:#75715e">// produces one random value in 1 to 6 in an 
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// uniform fashion, call this repeatedly to 
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// get more values
-</span><span style="color:#75715e"></span>    dis(engine);
-}
-</code></pre></div><h1 id="tldr">Tl;Dr</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;random&gt; // the header where all the magic happens</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// true source of randomness, used to seed
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>random_device rd;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 64 bit std::mersenne_twister_engine with a 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// good setting, note the size is big, consider 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// making it static or put it on heap to avoid 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// frequent construction 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>mt19937_64 engine{rd()};
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 1 to 6 inclusive, producing int
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>uniform_int_distribution<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> dis{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">6</span>}; 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// produces one random value in 1 to 6 in an 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// uniform fashion, call this repeatedly to 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// get more values
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    dis(engine);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="tldr">Tl;Dr</h1>
 <p>Don&rsquo;t ever use <code>std::rand()</code>.</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
-<p>Just like c-style strings, perhaps for a future post. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:1">
+<p>Just like c-style strings, perhaps for a future post.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
-<p>This is not strictly correct, technically it&rsquo;s called the probability density. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:2">
+<p>This is not strictly correct, technically it&rsquo;s called the probability density.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:3" role="doc-endnote">
-<p>Don&rsquo;t assume you can just round it and call it a day, your choice of rounding will affect the final distribution. <a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:3">
+<p>Don&rsquo;t assume you can just round it and call it a day, your choice of rounding will affect the final distribution.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:4" role="doc-endnote">
-<p>Don&rsquo;t assume you can implement cryptography with this, proper cryptography requires lots of training and additional requirements on the generator. <a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<li id="fn:4">
+<p>Don&rsquo;t assume you can implement cryptography with this, proper cryptography requires lots of training and additional requirements on the generator.&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:5" role="doc-endnote">
+<li id="fn:5">
 <p>Don&rsquo;t assume you can just cast the bit patterns to int or floats, you have no control of its distribution and you will be
-all kinds of pain if you cast it to floats since floats contain denormalized numbers, NaN, two 0s, and two infinities. <a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+all kinds of pain if you cast it to floats since floats contain denormalized numbers, NaN, two 0s, and two infinities.&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
 </div>
 
 <h2>Comments</h2>
 <div id="disqus_thread"></div>
 <script type="application/javascript">
-    var disqus_config = function () {
+    window.disqus_config = function () {
     
     
     
@@ -208,7 +208,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </body>
 </html>
